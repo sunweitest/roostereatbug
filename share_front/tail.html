@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分享BUG</title>
+    <!-- 引入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="vue.global.js"></script>
+    <script src="axios.min.js"></script>
+</head>
+
+<body class="bg-gray-50 p-5" style="background-color: darkseagreen">
+    <div id="app" class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="mr-2">🐓</span>分享BUG
+        </h1>
+
+    <!-- <iframe
+    src="http://localhost/chatbot/xFv0ot5dIDplRpMj"
+    style="width: 100%; height: 100%; min-height: 700px"
+    frameborder="0"
+    allow="microphone">
+    </iframe> -->
+    
+        <!-- 添加/搜索区域 -->
+        <div class="flex gap-3 mb-6">
+            <input 
+                v-model="searchKeyword" 
+                @input="searchBugs"
+                placeholder="搜索BUG..." 
+                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            >
+            <!-- <button 
+                @click="showAddForm = !showAddForm"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+                新建BUG
+            </button> -->
+            <button @click="showModal = true" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+                加反馈群
+              </button>
+            
+
+              <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm text-center relative">
+                  <!-- 关闭按钮 -->
+                  <button @click="showModal = false" class="absolute top-2 right-2 text-gray-600 hover:text-gray-800">
+                    &times;
+                  </button>
+          
+                  <!-- 二维码图片 -->
+                  <img src="./qrcode.png" alt="群二维码" class="w-full h-auto mb-4" />
+                  
+                  <p class="text-gray-700">用QQ扫码加入反馈群</p>
+                </div>
+              </div>  
+        </div>
+
+        <!-- 新建BUG表单 -->
+        <div v-if="showAddForm" class="bg-white p-6 rounded-xl shadow-md mb-6">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">新建BUG</h3>
+            <form @submit.prevent="createBug" class="space-y-4">
+                <div>
+                    <input 
+                        v-model="newBug.title" 
+                        placeholder="标题" 
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                </div>
+                <div>
+                    <textarea 
+                        v-model="newBug.description" 
+                        placeholder="描述" 
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-24"
+                    ></textarea>
+                </div>
+                <div>
+                    <select 
+                        v-model="newBug.status"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                        <option value=0>待处理</option>
+                        <option value=1>已解决</option>
+                    </select>
+                </div>
+                <button 
+                    type="submit"
+                    class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                >
+                    提交
+                </button>
+            </form>
+        </div>
+
+        <!-- BUG列表 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">标题</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">描述</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">状态</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <tr v-for="bug in filteredBugs" :key="bug.id" class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3 text-gray-700">{{ bug.title }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ bug.description }}</td>
+                        <td class="px-4 py-3">
+                            <span 
+                                class="px-2 py-1 text-sm rounded-full"
+                                :class="bug.status === 0 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'"
+                            >
+                                {{ bug.status === 0 ? '待处理' : '已解决' }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="flex gap-2">
+                                <button 
+                                    @click="openEditModal(bug)"
+                                    class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 transition-colors"
+                                >
+                                    查看解决方法
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 编辑模态框 -->
+        <div v-if="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-md p-6 rounded-xl shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4" style="color:green">解决方法</h3>
+                <form @submit.prevent="updateBug" class="space-y-1">
+                    <label >AI生成</label>
+                    <div>
+                        <textarea 
+                        v-model="editingBug.solution"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 h-36"
+                    ></textarea>
+                    </div>
+                    <div class="flex gap-2 justify-end">
+                        <button 
+                            type="button"
+                            @click="showEditModal = false"
+                            class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+                        >
+                            返回
+                        </button>
+                        <!-- <button 
+                            type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        >
+                            保存
+                        </button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+    data() {
+        return {
+            bugs: [],
+            newBug: {
+                title: '',
+                description: '',
+                status: '待处理'
+            },
+            searchKeyword: '',
+            editingBug: {},
+            showModal: false,
+            showEditModal: false,
+            showAddForm: false
+        }
+    },
+    computed: {
+        filteredBugs() {
+            return this.bugs.filter(bug => 
+                bug.title.toLowerCase().includes(this.searchKeyword.toLowerCase()) ||
+                bug.description.toLowerCase().includes(this.searchKeyword.toLowerCase())
+            );
+        }
+    },
+    mounted() {
+        this.fetchBugs();
+    },
+    methods: {
+        async fetchBugs() {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/bugs');
+                this.bugs = response.data;
+            } catch (error) {
+                console.error('获取BUG列表失败:', error);
+            }
+        },
+        async createBug() {
+            try {
+                await axios.post('http://127.0.0.1:8000/bugs', this.newBug);
+                this.newBug = { title: '', description: '', status: '待处理' };
+                this.showAddForm = false;
+                await this.fetchBugs();
+            } catch (error) {
+                console.error('创建BUG失败:', error);
+            }
+        },
+        async updateBug() {
+            try {
+                await axios.put(`http://127.0.0.1:8000/bugs/${this.editingBug.id}`, this.editingBug);
+                this.showEditModal = false;
+                await this.fetchBugs();
+            } catch (error) {
+                console.error('更新BUG失败:', error);
+            }
+        },
+        async deleteBug(id) {
+            if (confirm('确定要删除这个BUG吗？')) {
+                try {
+                    await axios.delete(`http://127.0.0.1:8000/bugs/${id}`);
+                    await this.fetchBugs();
+                } catch (error) {
+                    console.error('删除BUG失败:', error);
+                }
+            }
+        },
+        openEditModal(bug) {
+            this.editingBug = { ...bug };
+            this.showEditModal = true;
+        },
+        searchBugs() {
+            // 搜索逻辑由computed属性filteredBugs处理
+        }
+    }
+}).mount('#app');
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+:root {
+    --primary-color: #4361ee;
+    --success-color: #06d6a0;
+    --danger-color: #ef476f;
+    --bg-color: darkseagreen;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+    background-color: var(--bg-color);
+}
+
+h1 {
+    color: #2b2d42;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 700;
+}
+
+table {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+th {
+    background-color: var(--primary-color);
+    color: black;
+    font-weight: 600;
+    padding: 12px 15px;
+}
+
+td {
+    padding: 12px 15px;
+    transition: background 0.2s;
+}
+
+tr:hover td {
+    background-color: #f8f9fa;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+input, textarea, select {
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    padding: 10px;
+    transition: border-color 0.3s;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+button {
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: transform 0.1s, opacity 0.3s;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.success-btn {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.danger-btn {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.modal {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    width: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal h3 {
+    margin-top: 0;
+    color: #2b2d42;
+}
+
+.status-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.status-0 {
+    background-color: #ffd6a5;
+    color: #b66800;
+}
+
+.status-1 {
+    background-color: #caffbf;
+    color: #2b9348;
+}
+
+.add-form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 768px) {
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+

@@ -1,0 +1,10 @@
+__pycache__/
+.idea/
+venv/
+
+.vscode
+.ruff_cache/
+.pytest_cache/
+app.db
+.env
+.docx
