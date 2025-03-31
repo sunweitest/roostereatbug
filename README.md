@@ -66,4 +66,4 @@ Once the server is running, visit:
 - ReDoc: http://localhost:8000/redoc
 
 ## Open the home page
-share_front/index.html
+share_front/tail.html
