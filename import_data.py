@@ -63,6 +63,6 @@ if __name__ == "__main__":
     # 初始化 BugProcessor 实例
     bug_processor = BugProcessor()
     # 定义模块列表
-    modules = ["登录功能", "注册功能"]
+    modules = ["支付功能", "充值功能", "提现功能"]
     # 处理模块
     bug_processor.process_modules(modules)

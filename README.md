@@ -1,9 +1,8 @@
 # 🐓roosteratbug
-
 一个分享bug的平台。分享常见的bug，并让其他工程师能够查看和修复它们，以提高工作效率。
+<a href="https://blog.csdn.net/a15380920/article/details/146801962?spm=1001.2014.3001.5501">博客</a>
 
 ## Setup
-
 1. Install dependencies:
 ```bash
 pip install -r requirements.txt

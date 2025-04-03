@@ -1,2 +1,2 @@
 OPENAI_BASE_URL = "https://api.deepseek.com/v1"
-OPENAI_API_KEY = "sk-49ca3aded5e1483aa88a92cfc3fbbd9e"
+OPENAI_API_KEY = "your_deepseek_api_key"
